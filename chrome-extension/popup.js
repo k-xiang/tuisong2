@@ -13,6 +13,7 @@ const previewPlaceholder = document.getElementById('preview-placeholder');
 const generateBtn = document.getElementById('generate-btn');
 const downloadBtn = document.getElementById('download-btn');
 const copyBtn = document.getElementById('copy-btn');
+const summarizeBtn = document.getElementById('summarize-btn');
 
 // 模板配置
 const templates = {
@@ -78,6 +79,9 @@ function bindEventListeners() {
     
     // 复制到剪贴板按钮
     copyBtn.addEventListener('click', handleCopyToClipboard);
+    
+    // 总结按钮
+    summarizeBtn.addEventListener('click', handleSummarize);
 }
 
 // 处理文本输入
@@ -332,6 +336,80 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
+}
+
+// 处理总结按钮点击
+function handleSummarize() {
+    const text = textInput.value.trim();
+    
+    if (!text) {
+        alert('请先输入需要总结的文本内容');
+        return;
+    }
+    
+    // 禁用按钮并显示加载状态
+    summarizeBtn.disabled = true;
+    summarizeBtn.textContent = '生成中...';
+    
+    // 向本地服务器发送总结请求
+    fetch('http://localhost:3000/api/summarize', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('总结请求失败');
+        }
+        
+        // 处理流式响应
+        const reader = response.body.getReader();
+        let summary = '';
+        
+        function processText({ done, value }) {
+            if (done) {
+                // 总结完成
+                if (summary) {
+                    // 将总结结果显示在输入框中
+                    textInput.value = summary.trim();
+                    // 更新字数统计
+                    const length = summary.length;
+                    charCount.textContent = `${length}/500`;
+                    // 更新预览
+                    updatePreview();
+                    // 显示成功提示
+                    alert('总结生成成功！');
+                } else {
+                    alert('总结失败，请重试');
+                }
+                
+                // 恢复按钮状态
+                summarizeBtn.disabled = false;
+                summarizeBtn.textContent = 'DeepSeek R1 总结';
+                
+                return;
+            }
+            
+            // 处理新的文本块
+            const chunk = new TextDecoder('utf-8').decode(value);
+            summary += chunk;
+            
+            // 继续读取
+            return reader.read().then(processText);
+        }
+        
+        return reader.read().then(processText);
+    })
+    .catch(error => {
+        console.error('总结错误:', error);
+        alert('总结失败，请检查服务器是否运行并重试');
+        
+        // 恢复按钮状态
+        summarizeBtn.disabled = false;
+        summarizeBtn.textContent = 'DeepSeek R1 总结';
+    });
 }
 
 // 优化预览更新性能

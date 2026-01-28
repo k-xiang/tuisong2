@@ -83,6 +83,18 @@ body {
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
 }
 
+/* 输入区域操作按钮 */
+.input-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.input-actions .action-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
 /* 模板选择区域 */
 .template-section {
     margin-bottom: 20px;
