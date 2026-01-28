@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页金句图片生成器</title>
+    <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- 标题区域 -->
+        <header class="popup-header">
+            <h1>网页金句图片生成器</h1>
+        </header>
+        
+        <!-- 文本输入区域 -->
+        <section class="input-section">
+            <div class="input-header">
+                <label for="text-input">输入金句内容</label>
+                <span id="char-count" class="char-count">0/500</span>
+            </div>
+            <textarea 
+                id="text-input" 
+                placeholder="请复制粘贴需要转换的文字内容..."
+                maxlength="500"
+            ></textarea>
+        </section>
+        
+        <!-- 模板选择区域 -->
+        <section class="template-section">
+            <h3>选择模板风格</h3>
+            <div class="template-grid">
+                <div class="template-item active" data-template="classic">
+                    <div class="template-preview classic-preview"></div>
+                    <span>经典文艺</span>
+                </div>
+                <div class="template-item" data-template="modern">
+                    <div class="template-preview modern-preview"></div>
+                    <span>简约现代</span>
+                </div>
+                <div class="template-item" data-template="warm">
+                    <div class="template-preview warm-preview"></div>
+                    <span>温暖治愈</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 预览区域 -->
+        <section class="preview-section">
+            <h3>预览效果</h3>
+            <div class="preview-container">
+                <canvas id="preview-canvas" width="200" height="300"></canvas>
+                <div id="preview-placeholder" class="preview-placeholder">
+                    请输入文字内容查看预览
+                </div>
+            </div>
+        </section>
+        
+        <!-- 操作按钮区域 -->
+        <footer class="action-section">
+            <button id="generate-btn" class="action-btn primary">生成图片</button>
+            <div class="btn-group">
+                <button id="download-btn" class="action-btn secondary" disabled>下载</button>
+                <button id="copy-btn" class="action-btn secondary" disabled>复制到剪贴板</button>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
